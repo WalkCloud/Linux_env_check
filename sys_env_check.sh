@@ -143,9 +143,11 @@ function get_service_info() {
     if [ ${sysversion} -gt ${old_version} ];then
         service_config=$(systemctl list-unit-files --type=service --state=enabled|grep "enabled")
         run_service=$(systemctl list-units --type=service --state=running |grep ".service")
+        zombie_process=$(ps aux |awk '{if($8 == "Z"){print $2,$11}}')
     else
         service_config=$(/sbin/chkconfig | grep -E ":on|:启用" |column -t)
         run_service=$(/sbin/service --status-all|grep -E "running")
+        zombie_process=$(ps aux |awk '{if($8 == "Z"){print $2,$11}}')
     fi
 cat <<EOF
 服务启动配置:
@@ -159,6 +161,11 @@ ${line}
 监听端口:
 
 ${port_listen}
+${line}
+
+僵尸进程：
+
+${zombie_process}
 ${line}
 
 EOF
