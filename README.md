@@ -3,7 +3,7 @@
 工具版本：v1.0.0
 脚本语言：bash shell
 
-此脚本适用Linux系统环境：
+此脚本适用Linux环境：
 
 ```bash
 - CentOS 6.x~7.x
@@ -14,7 +14,7 @@
 ```bash
 bash sys_env_check.sh
 ```
-可检测系统类型
+此脚本可检测Linux类型：
 ```bash
 - CPU信息
 - 内存信息
