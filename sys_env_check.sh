@@ -1,9 +1,9 @@
 #!/bin/bash
 # auth:kevin lee
-# e-mail:hongyu@rancher.com
+# GitHub:https://github.com/WalkCloud/Linux_env_check.git
 # func:sys info check
 # version:v1.0.0
-# sys:centos6.x~7.x && ubuntu 16.x~18.x
+# system:centos6.x~7.x && ubuntu 16.x~18.x
 
 [ $(id -u) -gt 0 ] && echo "请用root用户执行此脚本！" && exit 1
 sysversion=$(cat /etc/os-release | grep VERSION_ID= |awk -F'"' '{print $2}'| awk -F'.' '{print $1}'|xargs)
