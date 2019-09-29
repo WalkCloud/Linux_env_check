@@ -139,7 +139,6 @@ EOF
 # 获取服务信息
 function get_service_info() {
     port_listen=$(ss -lntup|grep -v "Active Internet")
-    kernel_config=$(sysctl -p 2>/dev/null)
     os_vs_decide
     if [ ${sysversion} -gt ${old_version} ];then
         service_config=$(systemctl list-unit-files --type=service --state=enabled|grep "enabled")
@@ -161,9 +160,7 @@ ${line}
 
 ${port_listen}
 ${line}
-内核参考配置:
 
-${kernel_config}
 EOF
 }
 
@@ -238,4 +235,3 @@ function sys_check() {
 
 
 sys_check > ${sys_check_file}
-
