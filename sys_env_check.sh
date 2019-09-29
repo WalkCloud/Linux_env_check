@@ -1,5 +1,6 @@
 #!/bin/bash
-# auth:kevinlee
+# auth:kevin lee
+# e-mail:hongyu@rancher.com
 # func:sys info check
 # version:v1.0.0
 # sys:centos6.x~7.x && ubuntu 16.x~18.x
