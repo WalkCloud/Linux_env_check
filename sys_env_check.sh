@@ -142,7 +142,6 @@ EOF
 }
 
 # 获取内核信息
-# 获取内核信息
 
 function kernel_matrix() {
     kernel_1_num=$(uname -r | awk -F '.' '{print $1}')
@@ -172,6 +171,69 @@ ${prompt}
 
 EOF
 }
+
+# docker软件版本和相关配置
+function get_docker_info() {
+    docker_version=$(docker version)
+    docker_registry=$(docker info --format '{{json .RegistryConfig.Mirrors}}')
+    docker_rootdir=$(docker info --format '{{json .DockerRootDir}}')
+    docker_run_status=$(systemctl status docker.service | grep Active | awk -F ':' '{print $2}')
+    containers_total=$(docker ps -a | wc -l)
+    containers_running=$(docker ps | wc -l)
+    images_num=$(docker images| wc -l)
+    if [${containers_running} -le 110 ];then
+        containers_warning="容器运行数量在推荐范围之内，运行状态良好"
+    else
+        containers_total="容器运行数量超过本机推荐范围，存在负载隐患！"
+    fi
+
+cat <<EOF
+Docker运行版本：
+
+$(docker_version)
+$(line)
+
+Docker运行状态：
+
+$(docker_run_status)
+$(line)
+
+容器运行情况提示：
+
+$(docker_run_status)
+$(line)
+
+Docker数据存放路径（root）:
+
+$(docker_rootdir)
+$(line)
+
+容器镜像数量：
+
+$(images_num)
+$(line)
+
+容器镜像仓库地址：
+
+$(docker_registry)
+$(line)
+
+容器总计运行数量：
+
+$(containers_total)
+$(line)
+
+容器当前运行数量：
+
+$(containers_running)
+$(line)
+
+
+
+EOF
+}
+
+
 
 # 获取服务信息
 function get_service_info() {
@@ -268,6 +330,8 @@ function sys_check() {
     get_kernel_info
     echo ${line}
     get_service_info
+    echo ${line}
+    get_docker_info
     echo ${line}
     get_sys_user
     echo ${line}
