@@ -7,6 +7,7 @@
 
 [ $(id -u) -gt 0 ] && echo "请用root用户执行此脚本！" && exit 1
 sysversion=$(cat /etc/os-release | grep VERSION_ID= |awk -F'"' '{print $2}'| awk -F'.' '{print $1}'|xargs)
+current_os=$(cat /etc/os-release | grep NAME= |awk -F'"' 'NR==1{print $2}'|xargs)
 
 line="-------------------------------------------------"
 
@@ -16,7 +17,6 @@ sys_check_file="logs/$(ip a show dev ${net_card} |grep -w inet|awk '{print $2}'|
 
 #判断Linux操作系统是否为CentOS或者Ubuntu
 function os_vs_decide() {
-    current_os=$(cat /etc/os-release | grep NAME= |awk -F'"' 'NR==1{print $2}'|xargs)
     if [ "${current_os}" == "CentOS Linux" ];then
         old_version=6
     elif [ "${current_os}" == "Ubuntu" ];then
@@ -111,7 +111,7 @@ EOF
 # 获取系统信息
 function get_systatus_info() {
     sys_os=$(uname -o)
-    sys_release=$(cat /etc/os-release | grep PRETTY_NAME= |awk -F'"' '{print $2}'|xargs)
+    sys_release=$(cat /etc/os-release | grep PRETTY_NAME= |awk -F'"' '{print $2}')
     sys_kernel=$(uname -r)
     sys_hostname=$(hostname)
     sys_lang=$(echo $LANG)
@@ -119,6 +119,11 @@ function get_systatus_info() {
     sys_runtime=$(uptime |awk '{print  $3,$4}'|cut -d, -f1)
     sys_time=$(date)
     sys_load=$(uptime |cut -d: -f5)
+    if [ "${current_os}" == "CentOS Linux" ];then
+        sys_selinux=$(getenforce)
+    else
+        sys_selinux="selinux-utils is not installed"
+    fi
 
 cat <<EOF | column -t 
 系统信息:
@@ -133,6 +138,38 @@ selinux状态:  ${sys_selinux}
 系统最后重启时间:   ${sys_lastreboot}
 系统运行时间: ${sys_runtime}
 系统负载:   ${sys_load}
+EOF
+}
+
+# 获取内核信息
+# 获取内核信息
+
+function kernel_matrix() {
+    kernel_1_num=$(uname -r | awk -F '.' '{print $1}')
+    kernel_2_num=$(uname -r | awk -F '.' '{print $2}')
+    kernel_3_num=$(uname -r | awk '{split($0,kernel,"[-.]");print kernel[4]}')
+    if [ ${kernel_1_num} -ge 4 ];then
+        prompt="此kernel版本满足docker安装的最低要求"
+    elif [[ ${kernel_1_num} -eq 3 ]] && [[ ${kernel_2_num} -ge 10 ]];then
+        prompt="此kernel版本满足docker安装的最低要求"
+    else
+        prompt="此kernel版本不能满足docker安装的最低要求"
+    fi
+}
+
+function get_kernel_info() {
+    kernel_info=$(uname -r)
+    kernel_matrix
+cat <<EOF
+当前系统内核信息：
+
+${kernel_info}
+${line}
+
+当前系统内核与docker兼容性：
+
+${prompt}
+
 EOF
 }
 
@@ -177,7 +214,6 @@ function get_sys_user() {
     ssh_config=$(egrep -v "^#|^$" /etc/ssh/sshd_config)
     sudo_config=$(egrep -v "^#|^$" /etc/sudoers |grep -v "^Defaults")
     host_config=$(egrep -v "^#|^$" /etc/hosts)
-    crond_config=$(for cronuser in /var/spool/cron/* ;do ls ${cronuser} 2>/dev/null|cut -d/ -f5;egrep -v "^$|^#" ${cronuser} 2>/dev/null;echo "";done)
 cat <<EOF
 系统登录用户:
 
@@ -188,10 +224,6 @@ ssh 配置信息:
 ${ssh_config}
 ${line}
 sudo 配置用户:
-
-${sudo_config}
-${line}
-定时任务配置:
 
 ${crond_config}
 ${line}
@@ -232,6 +264,8 @@ function sys_check() {
     get_disk_info
     echo ${line}
     get_systatus_info
+    echo ${line}
+    get_kernel_info
     echo ${line}
     get_service_info
     echo ${line}
