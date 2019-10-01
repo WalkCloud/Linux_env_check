@@ -26,7 +26,6 @@ function os_vs_decide() {
     fi
 }
 
-
 # 获取系统cpu信息
 function get_cpu_info() {
     Physical_CPUs=$(grep "physical id" /proc/cpuinfo| sort | uniq | wc -l)
@@ -104,7 +103,6 @@ inode信息:
 
 ${disk_inode}
 EOF
-
 
 }
 
@@ -191,48 +189,37 @@ cat <<EOF
 Docker运行版本：
 
 ${docker_version}
-${line}
 
 Docker运行状态：
 
 ${docker_run_status}
-${line}
 
 容器运行情况提示：
 
 ${containers_warning}
-${line}
 
 Docker数据存放路径（root）:
 
 ${docker_rootdir}
-${line}
 
 容器镜像数量：
 
 ${images_num}
-${line}
 
 容器镜像仓库地址：
 
 ${docker_registry}
-${line}
 
 容器总计运行数量：
 
 ${containers_total}
-${line}
 
 容器当前运行数量：
 
 ${containers_running}
-${line}
-
-
 
 EOF
 }
-
 
 # 获取服务信息
 function get_service_info() {
@@ -294,7 +281,6 @@ ${host_config}
 EOF
 }
 
-
 function process_top_info() {
 
     top_title=$(top -b n1|head -7|tail -1)
@@ -313,7 +299,6 @@ ${top_title}
 ${mem_top10}
 EOF
 }
-
 
 function sys_check() {
     get_cpu_info
@@ -336,6 +321,5 @@ function sys_check() {
     echo ${line}
     process_top_info
 }
-
 
 sys_check > ${sys_check_file}
