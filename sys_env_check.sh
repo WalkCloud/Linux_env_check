@@ -189,6 +189,7 @@ cat <<EOF
 Docker运行版本：
 
 ${docker_version}
+${line}
 
 Docker运行状态：
 
@@ -198,25 +199,17 @@ ${docker_run_status}
 
 ${containers_warning}
 
-Docker数据存放路径（root）:
+Docker数据存放路径（root）:${docker_rootdir}
 
-${docker_rootdir}
-
-容器镜像数量：
-
-${images_num}
+容器镜像数量：${images_num}
 
 容器镜像仓库地址：
 
 ${docker_registry}
 
-容器总计运行数量：
+容器总计运行数量：${containers_total}
 
-${containers_total}
-
-容器当前运行数量：
-
-${containers_running}
+容器当前运行数量：${containers_running}
 
 EOF
 }
