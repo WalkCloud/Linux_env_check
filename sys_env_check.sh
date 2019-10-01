@@ -181,58 +181,57 @@ function get_docker_info() {
     containers_total=$(docker ps -a | wc -l)
     containers_running=$(docker ps | wc -l)
     images_num=$(docker images| wc -l)
-    if [${containers_running} -le 110 ];then
+    if [ ${containers_running} -le 110 ];then
         containers_warning="容器运行数量在推荐范围之内，运行状态良好"
     else
-        containers_total="容器运行数量超过本机推荐范围，存在负载隐患！"
+        containers_warning="容器运行数量超过本机推荐范围，存在负载隐患！"
     fi
 
 cat <<EOF
 Docker运行版本：
 
-$(docker_version)
-$(line)
+${docker_version}
+${line}
 
 Docker运行状态：
 
-$(docker_run_status)
-$(line)
+${docker_run_status}
+${line}
 
 容器运行情况提示：
 
-$(docker_run_status)
-$(line)
+${containers_warning}
+${line}
 
 Docker数据存放路径（root）:
 
-$(docker_rootdir)
-$(line)
+${docker_rootdir}
+${line}
 
 容器镜像数量：
 
-$(images_num)
-$(line)
+${images_num}
+${line}
 
 容器镜像仓库地址：
 
-$(docker_registry)
-$(line)
+${docker_registry}
+${line}
 
 容器总计运行数量：
 
-$(containers_total)
-$(line)
+${containers_total}
+${line}
 
 容器当前运行数量：
 
-$(containers_running)
-$(line)
+${containers_running}
+${line}
 
 
 
 EOF
 }
-
 
 
 # 获取服务信息
