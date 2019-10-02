@@ -152,16 +152,8 @@ function kernel_matrix() {
     else
         prompt="此kernel版本不能满足docker安装的最低要求"
     fi
-}
 
-function get_kernel_info() {
-    kernel_info=$(uname -r)
-    kernel_matrix
 cat <<EOF
-当前系统内核信息：
-
-${kernel_info}
-${line}
 
 当前系统内核与docker兼容性：
 
@@ -304,7 +296,7 @@ function sys_check() {
     echo ${line}
     get_systatus_info
     echo ${line}
-    get_kernel_info
+    get_kernel_matrix
     echo ${line}
     get_service_info
     echo ${line}
