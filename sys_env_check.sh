@@ -241,7 +241,6 @@ ${line}
 EOF
 }
 
-
 function get_sys_user() {
     login_user=$(awk -F: '{if ($NF=="/bin/bash") print $0}' /etc/passwd)
     ssh_config=$(egrep -v "^#|^$" /etc/ssh/sshd_config)
